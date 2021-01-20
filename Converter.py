@@ -11,6 +11,9 @@ import json
 
 def GetAllFilesName(directory):
     files = []
+    if (not os.path.exists(directory)):
+        print ("put your excels in a folder called 'Excels' beside this file and try again")
+        return files
     for (dirpath, dirnames, filenames) in os.walk(directory):
         files.extend(filenames)
         break
@@ -219,6 +222,10 @@ def AskForEachFile(excelPath, excels):
 excelPath = "Excels/"
 
 files = GetAllFilesName(excelPath)
+if(files == []):
+    #raw_input("Press any key to close ....")
+    os.system('pause')
+    os._exit(0)
 PrintSection("Files in directory: ", files)
 
 excels = GetValidExcelFiles(files)
