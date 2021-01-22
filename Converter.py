@@ -186,9 +186,15 @@ def ExportExcelWithModel (excelPath, excel):
             else:
                 if (model[column] == "float64" or model[column] == "int64" ):
                     df[column].fillna(0, inplace = True)
-                else:
+                elif (model[column] == "str"):
                     df[column].fillna("", inplace = True)
-                df[column] = df[column].astype(model[column])
+                elif (model[column] == "intstr"):
+                    df[column].fillna("0", inplace = True)
+                    df[column] = df[column].astype(int)
+                    df[column] = df[column].astype(str)
+
+                if (model[column] != "intstr"):
+                    df[column] = df[column].astype(model[column])
 
         #df.fillna("", inplace = True)
         #df = df.astype(str)
@@ -245,3 +251,8 @@ if (YesOrNoQuestion("ConvertAllFiles?")):
         ExportExcelsWithoutModel(excelPath, excels)
 else:
     AskForEachFile(excelPath, excels)
+
+
+print ("Completed")
+os.system('pause')
+os._exit(0)
