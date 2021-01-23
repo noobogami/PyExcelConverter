@@ -141,6 +141,10 @@ def ExportExcelWithoutModel(excelPath, excel):
 
         #df.fillna("", inplace = True)
         #df = df.astype(str)
+        df.dropna(
+            axis = 0,
+            how = "all",
+            inplace = True)
 
         json = df.to_json(double_precision = 0, orient = "records", indent = 3)
         CreateFile("Jsons/" + RemoveExtension(excel), sheet, "json", json)
@@ -180,6 +184,10 @@ def ExportExcelWithModel (excelPath, excel):
         #print (df.dtypes)
         #return
 
+        df.dropna(
+            axis = 0,
+            how = "all",
+            inplace = True)
         for column in df.columns:
             if (column not in columns):
                 df.drop(column, inplace = True, axis=1)
@@ -198,7 +206,7 @@ def ExportExcelWithModel (excelPath, excel):
 
         #df.fillna("", inplace = True)
         #df = df.astype(str)
-
+        
         json = df.to_json(double_precision = 0, orient = "records", indent = 3)
         CreateFile("Jsons/" + RemoveExtension(excel), sheet, "json", json)
 
