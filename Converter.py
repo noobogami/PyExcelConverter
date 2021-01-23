@@ -124,7 +124,10 @@ def ExportExcelWithoutModel(excelPath, excel):
     PrintSeperator(0)
     PrintSection("Available Sheet for: " + excel, sheets)
     PrintSeperator(1)
-
+    df.dropna(
+            axis = 0,
+            how = "all",
+            inplace = True)
     for sheet in sheets:
         PrintSection("Sheet " + sheet)
         df = pandas.read_excel(excelFile, sheet)
@@ -141,10 +144,6 @@ def ExportExcelWithoutModel(excelPath, excel):
 
         #df.fillna("", inplace = True)
         #df = df.astype(str)
-        df.dropna(
-            axis = 0,
-            how = "all",
-            inplace = True)
 
         json = df.to_json(double_precision = 0, orient = "records", indent = 3)
         CreateFile("Jsons/" + RemoveExtension(excel), sheet, "json", json)
