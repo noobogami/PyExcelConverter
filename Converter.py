@@ -124,15 +124,15 @@ def ExportExcelWithoutModel(excelPath, excel):
     PrintSeperator(0)
     PrintSection("Available Sheet for: " + excel, sheets)
     PrintSeperator(1)
-    df.dropna(
-            axis = 0,
-            how = "all",
-            inplace = True)
     for sheet in sheets:
         PrintSection("Sheet " + sheet)
         df = pandas.read_excel(excelFile, sheet)
         columns = GetValidColumns(df)
 
+        df.dropna(
+            axis = 0,
+            how = "all",
+            inplace = True)
         for column in df.columns:
             if (column not in columns):
                 df.drop(column, inplace = True, axis=1)
