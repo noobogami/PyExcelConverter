@@ -191,6 +191,8 @@ def ExportExcelWithModel (excelPath, excel):
             if (column not in columns):
                 df.drop(column, inplace = True, axis=1)
             else:
+                if (column not in model):
+                    continue;
                 if (model[column] == "float64" or model[column] == "int64" ):
                     df[column].fillna(0, inplace = True)
                 elif (model[column] == "str"):
