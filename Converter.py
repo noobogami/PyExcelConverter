@@ -44,7 +44,7 @@ def GetValidColumns(dataFrame):
     for column in columns:
         print("Column ", column, end = " : ")
         print(dataFrame[column].dtype, end = "")
-        if ('~' not in column):
+        if ('~' not in column and "Unnamed" not in column):
             validColumns.append(column)
             print (" --------------> ADDED")
         else:
