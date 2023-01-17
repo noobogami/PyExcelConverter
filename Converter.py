@@ -7,7 +7,20 @@
 import numpy
 import pandas
 import os
+import io
 import json
+from codecs import open
+from pathlib import Path
+from tkinter import *
+from tkinter import filedialog
+
+def OpenDialogueToSelectDirectory():
+    #filepath = filedialog.askdirectory(initialdir="C:\\Users\\Cakow\\PycharmProjects\\Main",
+    filepath = filedialog.askdirectory(initialdir=Path().absolute(),
+                                          title="Select Excels Folder",
+                                          mustexist=True)
+    return filepath
+
 
 def GetAllFilesName(directory):
     files = []
@@ -83,7 +96,7 @@ def RemoveExtension(fileName):
 def GetJson(filePath, fileName):
     file = filePath + fileName
     if (not os.path.exists(file)):
-        print ("json file", fileName, "could not be found in", filePath)
+        print ("json file", fileName, "could not be found in", filePath, "full path:", file)
         return False, ""
     with open(file) as f:
         data = json.load(f)
@@ -91,26 +104,31 @@ def GetJson(filePath, fileName):
     return True, data
 
 def CreateFile(directory, name, extension, value):
-    CreateDirectory(".", directory)
+    CreateDirectory(directory)
 
     path = directory + '/' + name + '.' + extension
     file = open(path,"w+")
+    # file.write(value.encode("utf-8").decode("unicode-escape"))
     file.write(value)
     file.close()
     print("File Created ", path)
+    return path
 
-def CreateDirectory(directory, name):
-    path = directory + '/' + name
-    if (os.path.exists(path)):
-        print ("Directory '%s' Exists" % path)
-        return
-    else:
-        try:
-            os.makedirs(path)
-        except OSError:
-            print ("Creation of the directory '%s' failed" % path)
+def CreateDirectory(directory):
+    folders = directory.split('/')
+    path = folders[0] + '/' + folders[1]
+    for i in range(2, len(folders), 1):
+        path += '/' + folders[i]
+        if (os.path.exists(path)):
+            print ("Directory '%s' Exists" % path)
+            continue
         else:
-            print ("Successfully created the directory '%s' " % path)
+            try:
+                os.makedirs(path)
+            except OSError:
+                print ("Creation of the directory '%s' failed" % path)
+            else:
+                print ("Successfully created the directory '%s' " % path)
 
 def ExportExcelsWithoutModel (excelPath, excels):
     for excel in excels:
@@ -145,8 +163,8 @@ def ExportExcelWithoutModel(excelPath, excel):
         #df.fillna("", inplace = True)
         #df = df.astype(str)
 
-        json = df.to_json(double_precision = 0, orient = "records", indent = 3)
-        CreateFile("Jsons/" + RemoveExtension(excel), sheet, "json", json)
+        jsonString = df.to_json(double_precision = 0, orient = "records", indent = 3)
+        jsonPath = CreateFile(excelPath + "Jsons/" + RemoveExtension(excel), sheet, "json", jsonString)
 
         PrintSeperator(2)
 
@@ -208,9 +226,9 @@ def ExportExcelWithModel (excelPath, excel):
         #df.fillna("", inplace = True)
         #df = df.astype(str)
         
-        json = df.to_json(double_precision = 0, orient = "records", indent = 3)
-        CreateFile("Jsons/" + RemoveExtension(excel), sheet, "json", json)
-
+        jsonString = df.to_json(double_precision = 0, orient = "records", indent = 3)
+        jsonPath = CreateFile(excelPath + "Jsons/" + RemoveExtension(excel), sheet, "json", jsonString)
+            
         PrintSeperator(2)
     return True
 
@@ -234,7 +252,9 @@ def AskForEachFile(excelPath, excels):
             else:
                 ExportExcelWithoutModel (excelPath, excel)
 
-excelPath = "Excels/"
+
+excelPath = OpenDialogueToSelectDirectory() + "/"
+print(excelPath)
 
 files = GetAllFilesName(excelPath)
 if(files == []):
