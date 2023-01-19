@@ -107,7 +107,7 @@ def CreateFile(directory, name, extension, value):
     CreateDirectory(directory)
 
     path = directory + '/' + name + '.' + extension
-    file = open(path,"w+")
+    file = open(path,"w+", encoding = "utf-8")
     # file.write(value.encode("utf-8").decode("unicode-escape"))
     file.write(value)
     file.close()
@@ -227,6 +227,9 @@ def ExportExcelWithModel (excelPath, excel):
         #df = df.astype(str)
         
         jsonString = df.to_json(double_precision = 0, orient = "records", indent = 3)
+        # obj = json.load(jsonString)
+        # convertedJson = json.dump(obj, enc)
+        jsonString = jsonString.encode("utf-8").decode('unicode-escape')
         jsonPath = CreateFile(excelPath + "Jsons/" + RemoveExtension(excel), sheet, "json", jsonString)
             
         PrintSeperator(2)
